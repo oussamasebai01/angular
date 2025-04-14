@@ -1,0 +1,315 @@
+
+  /* Button styles */
+  .btn-primary {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .btn-primary:hover {
+    background-color: #2563eb;
+  }
+  
+  .btn-action {
+    background: none;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+  
+  .btn-action.edit {
+    color: #3b82f6;
+  }
+  
+  .btn-action.delete {
+    color: #ef4444;
+  }
+  .btn-action.view {
+    color: #7eea20d3;
+  }
+  .btn-action:hover {
+    background-color: #f3f4f6;
+  }
+  
+  /* Delete dialog styles */
+  .delete-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    width: 100%;
+    max-width: 450px;
+    border-radius: 8px;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.15);
+    z-index: 1001;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+  }
+  
+  .delete-dialog.active {
+    opacity: 1;
+    visibility: visible;
+    animation: fadeIn 0.3s forwards;
+  }
+  
+  .delete-dialog-content {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .delete-dialog-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid #eaeaea;
+  }
+  
+  .delete-dialog-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .close-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #9ca3af;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+  }
+  
+  .close-button:hover {
+    background-color: #f3f4f6;
+    color: #6b7280;
+  }
+  
+  .delete-dialog-body {
+    padding: 24px;
+  }
+  
+  .delete-dialog-body p {
+    margin-bottom: 16px;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #4b5563;
+  }
+  
+  .warning-text {
+    color: #ef4444;
+    font-weight: 500;
+  }
+  
+  .delete-dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px 24px;
+    gap: 10px;
+    border-top: 1px solid #eaeaea;
+  }
+  
+  .btn-cancel {
+    background-color: white;
+    color: #333;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .btn-cancel:hover {
+    background-color: #f3f4f6;
+  }
+  
+  .btn-delete {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .btn-delete:hover {
+    background-color: #dc2626;
+  }
+  
+  /* Overlay for background dimming */
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    z-index: 1000;
+    transition: opacity 0.3s, visibility 0.3s;
+  }
+  
+  .overlay.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  /* Animation for dialog appearance */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -60%);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
+  }
+  
+  /* Animation for row deletion */
+  .fade-out {
+    transition: opacity 0.3s;
+    opacity: 0;
+  }
+  
+  /* Angular-specific animations */
+  :host {
+    display: block;
+  }
+.card {
+  width: 330px;
+  height: 80px;
+  border-radius: 8px;
+  box-sizing: border-box;
+  padding: 10px 15px;
+  background-color: #ffffff;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 15px;
+}
+.wave {
+  position: absolute;
+  transform: rotate(90deg);
+  left: -31px;
+  top: 32px;
+  width: 80px;
+  fill: #04e4003a;
+}
+.icon-container {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #04e40048;
+  border-radius: 50%;
+  margin-left: 8px;
+}
+.icon {
+  width: 17px;
+  height: 17px;
+  color: #269b24;
+}
+.message-text-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  flex-grow: 1;
+}
+.message-text,
+.sub-text {
+  margin: 0;
+  cursor: default;
+}
+.message-text {
+  color: #269b24;
+  font-size: 17px;
+  font-weight: 700;
+}
+.sub-text {
+  font-size: 14px;
+  color: #555;
+}
+.cross-icon {
+  width: 18px;
+  height: 18px;
+  color: #555;
+  cursor: pointer;
+}
+
+
+/* Responsive styles */
+
+select#item-type {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #fff;
+  color: #333;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg fill="%23333" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+}
+
+/* Hover et focus */
+select#item-type:hover {
+  border-color: #999;
+}
+select#item-type:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+/* Option visible normalement */
+option {
+  padding: 8px;
+  font-size: 16px;
+}
+
+/* Animation fade-out pour option désactivée */
+.fade-out {
+  opacity: 0.4;
+  transition: opacity 0.5s ease-in-out;
+}
+
+/* Option par défaut en gris */
+option[value=""] {
+  color: #aaa;
+  font-style: italic;
+}
+
+

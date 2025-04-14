@@ -1,0 +1,549 @@
+<div class="container1">
+  <app-nav-bar></app-nav-bar>
+    <main class="main-content">
+        <!-- Content Panels -->
+        <div class="content-area">
+          <!-- Processes Panel -->
+          <div class="panels-row">
+            <section class="panel active" id="processus-panel">
+              <div class="panel-header">
+                <h2>Processes</h2>
+                <button class="btn-primary" data-action="create" data-type="process" (click)="openAddDialog()">Create</button>
+              </div>
+              <div class="table-container">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th colspan="2">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of processes" [class.fade-out]="item.id === currentId && !isActive">
+                      <td>{{ item.code }}<td>
+                      <td><button [routerLink]="['/update',item.id]" class="btn-action edit">Edit</button></td>
+                      <td><button class="btn-action delete" (click)="openDeleteDialog(item.id)">Delete</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="panel" id="user-access-panel">
+              <div class="panel-header">
+                <h2>User Access</h2>
+                <i class="fas fa-user profile-icon"></i>
+              </div>
+  
+              <div class="table-container">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>User</th>
+                      <th>Access</th>
+                      <th colspan="2">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Isabelle</td>
+                      <td>View</td>
+                      <td class="action-cell" data-action="edit" data-type="user" data-id="1">Edit</td>
+                      <td class="btn-action delete" data-action="delete" data-type="user" data-id="1">Delete</td>
+                    </tr>
+                    <tr>
+                      <td>Thomas</td>
+                      <td>Edit</td>
+                      <td class="action-cell" data-action="edit" data-type="user" data-id="2">Edit</td>
+                      <td class="btn-action delete" data-action="delete" data-type="user" data-id="2">Delete</td>
+                    </tr>
+                    <tr>
+                      <td>Alice</td>
+                      <td>None</td>
+                      <td class="action-cell" data-action="edit" data-type="user" data-id="3">Edit</td>
+                      <td class="btn-action delete" data-action="delete" data-type="user" data-id="3">Delete</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+          <div class="panels-row">
+            <section class="panel" id="indicateurs-panel">
+              <div class="panel-header">
+                <h2>Indicators</h2>
+                <button class="btn-primary" data-action="create" data-type="indicator" (click)="openAddInd()">Add</button>
+              </div>
+              <div class="table-container">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th colspan="2">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of Inducateur"  [class.fade-out]="item.id === currentIdInduc && !isActiveI">
+                      <td> {{item.code}}</td>
+                      <td [routerLink]="['/updates',item.id]" class="action-cell" data-action="edit">Edit</td>
+                      <td><button class="btn-action delete" (click)="openDeleteDialogI(item.id)">Delete</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+            <!-- Statistics Panel -->
+          <section class="panel" id="statistics-panel">
+            <div class="panel-header">
+              <h2>Statistics</h2>
+              <div class="stats-period-selector">
+                <button class="period-btn active" data-period="month">Month</button>
+                <button class="period-btn" data-period="quarter">Quarter</button>
+                <button class="period-btn" data-period="year">Year</button>
+              </div>
+            </div>
+
+            <div class="chart-container">
+              <canvas id="statisticsChart"></canvas>
+            </div>
+          </section>
+          </div>
+          <div class="panels-row three-panels">
+            <!-- Non-Conformece Panel -->
+          <section class="panel" id="roles-panel">
+            <div class="panel-header">
+              <h2>Non-Conformece</h2>
+              <button class="btn-primary" data-action="create" data-type="role" (click)="openAddN()">Add</button>
+            </div>
+
+            <div class="list-container">
+              <ul class="item-list">
+                <li data-action="view" data-type="role" data-id="1" *ngFor="let item of NonConformite" [class.fade-out]="item.id === curID && !activ">
+                  <span >{{item.name}}</span>
+                  <i class="fas fa-chevron-right" (click)="open(item.id)"></i>
+                </li>
+              </ul>
+            </div>
+          </section>
+            <!-- Objectives Panel -->
+            <section class="panel" id="objectifs-panel">
+              <div class="panel-header">
+                <h2>Objectives</h2>
+                <button class="btn-primary" data-action="create" data-type="objective" (click)="openAddO()">Add</button>
+              </div>
+  
+              <div class="list-container">
+                <ul class="item-list">
+                  <li data-action="view" data-type="objective" data-id="1" *ngFor="let item of Objectifs" [class.fade-out]="item.id === cuID && !activeO">
+                    <span>{{item.code}}</span>
+                    <i class="fas fa-chevron-right" (click)="openO(item.id)"></i>
+                  </li>
+                </ul>
+              </div>
+            </section>
+                      <!-- Strategic Axes Panel -->
+          <section class="panel" id="axes-panel">
+            <div class="panel-header">
+              <h2>Strategic Axes</h2>
+              <button class="btn-primary" data-action="create" data-type="axis" (click)="openAddA()">Add</button>
+            </div>
+
+            <div class="list-container">
+              <ul class="item-list">
+                <li data-action="view" data-type="axis" data-id="1" *ngFor="let item of axe" [class.fade-out]="item.id === cID && !activeA">
+                  <span>{{item.axes}}</span>
+                  <i class="fas fa-chevron-right" (click)="openA(item.id)"></i>
+                </li>
+              </ul>
+            </div>
+          </section>
+          </div>
+        </div>
+      </main>
+</div>
+
+<!--Creat Prosses-->
+<div class="modal" id="crud-modal" [class.active]="isActiveADD">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modal-title">Create New Prosses</h2>
+      <span class="close-modal"><button class="close-button" (click)="closeAddDialog()">&times;</button></span>
+    </div>
+    <div class="modal-body">
+      <form id="crud-form">
+        <div class="form-group">
+          <label for="item-name">Code</label>
+          <input type="text" id="item-name" name="name" required [(ngModel)]="prosses.code" />
+        </div>
+        <div class="form-group" id="description-group">
+          <label for="item-description">Description</label>
+          <textarea id="item-description" name="description" rows="4" [(ngModel)]="prosses.description"></textarea>
+        </div>
+        <div class="form-group" id="description-group">
+          <select id="item-type" name="type" required >
+            <option value="">Select Objectife</option>
+            <option *ngFor="let item of Objectifs" [class.fade-out]="item.id === cuID && !isActive" name="objectif" [(ngModel)]="prosses.code">{{item.code}}</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" (click)="closeAddDialog()">Cancel</button>
+          <button type="submit" class="btn-submit" (click)="addProcess()"><i class="fas fa-spinner fa-spin"></i>Save...</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+  <!-- Delete Confirmation Modal -->
+  <div class="modal" id="delete-modal" [class.active]="isActive" >
+    <div class="modal-content modal-sm">
+      <div class="modal-header" >
+        <h2>Confirm Delete</h2>
+        <span class="close-modal"><button class="close-button" (click)="closeDeleteDialog()">&times;</button></span>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete <span id="delete-item-name">{{ currentId }}</span>?</p>
+        <p class="warning">This action cannot be undone.</p>
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" (click)="closeDeleteDialog()">Cancel</button>
+          <button type="button" class="btn-delete" id="confirm-delete" (click)="deleteProcess(currentId!)"><i class="fas fa-spinner fa-spin"></i> Deleting...</button>
+        </div>
+      </div>
+    </div>
+  </div> 
+
+  
+<!--Creat Inducater-->
+<div class="modal" id="crud-modal" [class.active]="isActiveIND">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modal-title">Create New Inducateur</h2>
+      <span class="close-modal"><button class="close-button" (click)="closeAddInd()">&times;</button></span>
+    </div>
+    <div class="modal-body">
+      <form id="crud-form">
+        <div class="form-group">
+          <label for="item-name">Code</label>
+          <input type="text" id="item-name" name="name" required [(ngModel)]="ind.code" />
+        </div>
+        <div class="form-group">
+          <label for="item-Libelle">Libelle</label>
+          <input type="text" id="item-Libelle" name="libelle" required  [(ngModel)]="ind.libelle"/>
+        </div>
+        <div class="form-group">
+          <label for="item-methode">Methode_Calculle</label>
+          <input type="text" id="item-methode" name="methode" required  [(ngModel)]="ind.methode"/>
+        </div>
+        <div class="form-group" id="description-group">
+          <select id="item-type" name="type" required >
+            <option value="">Select Objectife</option>
+            <option *ngFor="let item of Objectifs" [class.fade-out]="item.id === cuID && !isActive">{{item.code}}</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" (click)="closeAddInd()">Cancel</button>
+          <button type="submit" class="btn-submit" (click)="addinducater()"><i class="fas fa-spinner fa-spin"></i>add...</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+    <!-- Delete Confirmation Modal Inducateur -->
+    <div class="modal" id="delete-modal" [class.active]="isActiveI" >
+      <div class="modal-content modal-sm">
+        <div class="modal-header" >
+          <h2>Confirm Delete</h2>
+          <span class="close-modal"><button class="close-button" (click)="closeDeleteDialogI()">&times;</button></span>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete <span id="delete-item-name">{{ currentIdInduc }}</span>?</p>
+          <p class="warning">This action cannot be undone.</p>
+          <div class="form-actions">
+            <button type="button" class="btn-cancel" (click)="closeDeleteDialogI()">Cancel</button>
+            <button type="button" class="btn-delete" id="confirm-delete" (click)="deletIndicateur(currentIdInduc!)"><i class="fas fa-spinner fa-spin"></i> Deleting...</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+     <!-- View Details Modal Non-Conformece-->
+  <div class="modal" id="view-modal" [class.active]="activ" *ngFor="let item of NonConformite" [class.fade-out]="item.id === curID">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="view-modal-title">Non-Conformece Details</h2>
+        <span class="close-modal"><button class="close-button" (click)="close()">&times;</button></span>
+      </div>
+      <div class="modal-body" >
+        <div class="details-container">
+<div class="card">
+  <svg class="wave" viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M0,256L11.4,240C22.9,224,46,192,69,192C91.4,192,114,224,137,234.7C160,245,183,235,206,213.3C228.6,192,251,160,274,149.3C297.1,139,320,149,343,181.3C365.7,213,389,267,411,282.7C434.3,299,457,277,480,250.7C502.9,224,526,192,549,181.3C571.4,171,594,181,617,208C640,235,663,277,686,256C708.6,235,731,149,754,122.7C777.1,96,800,128,823,165.3C845.7,203,869,245,891,224C914.3,203,937,117,960,112C982.9,107,1006,181,1029,197.3C1051.4,213,1074,171,1097,144C1120,117,1143,107,1166,133.3C1188.6,160,1211,224,1234,218.7C1257.1,213,1280,139,1303,133.3C1325.7,128,1349,192,1371,192C1394.3,192,1417,128,1429,96L1440,64L1440,320L1428.6,320C1417.1,320,1394,320,1371,320C1348.6,320,1326,320,1303,320C1280,320,1257,320,1234,320C1211.4,320,1189,320,1166,320C1142.9,320,1120,320,1097,320C1074.3,320,1051,320,1029,320C1005.7,320,983,320,960,320C937.1,320,914,320,891,320C868.6,320,846,320,823,320C800,320,777,320,754,320C731.4,320,709,320,686,320C662.9,320,640,320,617,320C594.3,320,571,320,549,320C525.7,320,503,320,480,320C457.1,320,434,320,411,320C388.6,320,366,320,343,320C320,320,297,320,274,320C251.4,320,229,320,206,320C182.9,320,160,320,137,320C114.3,320,91,320,69,320C45.7,320,23,320,11,320L0,320Z"
+      fill-opacity="1"
+    ></path>
+  </svg>
+
+  <div class="icon-container">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 512 512"
+      stroke-width="0"
+      fill="currentColor"
+      stroke="currentColor"
+      class="icon"
+    >
+      <path
+        d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z"
+      ></path>
+    </svg>
+  </div>
+  <div class="message-text-container">
+    <p class="message-text">Success message</p>
+    <p class="sub-text">Faire Clicke sur les botton</p>
+  </div>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 15 15"
+    stroke-width="0"
+    fill="none"
+    stroke="currentColor"
+    class="cross-icon"
+  >
+    <path
+      fill="currentColor"
+      d="M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z"
+      clip-rule="evenodd"
+      fill-rule="evenodd"
+    ></path>
+  </svg>
+</div>
+
+        </div>
+        <div class="details-actions">
+          <button type="button" class="btn-delete" id="detail-edit-btn"(click)="deleteNonConformite(curID!)"><i class="fas fa-spinner fa-spin"></i> Deleting...</button>
+          <button type="button" [routerLink]="['/updateN',item.id]"class="btn-edit" id="detail-edit-btn"><i class="fas fa-spinner fa-spin"></i>Edit...</button>
+          <button type="button" class="btn-close" (click)="close()">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- View Details Modal Objectif-->
+     <div class="modal" id="view-modal" [class.active]="activeO" *ngFor="let item of Objectifs" [class.fade-out]="item.id === cuID">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="view-modal-title">Objectif Details</h2>
+          <span class="close-modal"><button class="close-button" (click)="closeO()">&times;</button></span>
+        </div>
+        <div class="modal-body" >
+          <div class="details-container">
+<div class="card">
+  <svg class="wave" viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M0,256L11.4,240C22.9,224,46,192,69,192C91.4,192,114,224,137,234.7C160,245,183,235,206,213.3C228.6,192,251,160,274,149.3C297.1,139,320,149,343,181.3C365.7,213,389,267,411,282.7C434.3,299,457,277,480,250.7C502.9,224,526,192,549,181.3C571.4,171,594,181,617,208C640,235,663,277,686,256C708.6,235,731,149,754,122.7C777.1,96,800,128,823,165.3C845.7,203,869,245,891,224C914.3,203,937,117,960,112C982.9,107,1006,181,1029,197.3C1051.4,213,1074,171,1097,144C1120,117,1143,107,1166,133.3C1188.6,160,1211,224,1234,218.7C1257.1,213,1280,139,1303,133.3C1325.7,128,1349,192,1371,192C1394.3,192,1417,128,1429,96L1440,64L1440,320L1428.6,320C1417.1,320,1394,320,1371,320C1348.6,320,1326,320,1303,320C1280,320,1257,320,1234,320C1211.4,320,1189,320,1166,320C1142.9,320,1120,320,1097,320C1074.3,320,1051,320,1029,320C1005.7,320,983,320,960,320C937.1,320,914,320,891,320C868.6,320,846,320,823,320C800,320,777,320,754,320C731.4,320,709,320,686,320C662.9,320,640,320,617,320C594.3,320,571,320,549,320C525.7,320,503,320,480,320C457.1,320,434,320,411,320C388.6,320,366,320,343,320C320,320,297,320,274,320C251.4,320,229,320,206,320C182.9,320,160,320,137,320C114.3,320,91,320,69,320C45.7,320,23,320,11,320L0,320Z"
+      fill-opacity="1"
+    ></path>
+  </svg>
+
+  <div class="icon-container">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 512 512"
+      stroke-width="0"
+      fill="currentColor"
+      stroke="currentColor"
+      class="icon"
+    >
+      <path
+        d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z"
+      ></path>
+    </svg>
+  </div>
+  <div class="message-text-container">
+    <p class="message-text">Success message</p>
+    <p class="sub-text">Faire Clicke sur les botton</p>
+  </div>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 15 15"
+    stroke-width="0"
+    fill="none"
+    stroke="currentColor"
+    class="cross-icon"
+  >
+    <path
+      fill="currentColor"
+      d="M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z"
+      clip-rule="evenodd"
+      fill-rule="evenodd"
+    ></path>
+  </svg>
+</div>
+          </div>
+          <div class="details-actions">
+            <button type="button" class="btn-delete" id="detail-edit-btn" (click)="deleteObjectif(cuID!)"><i class="fas fa-spinner fa-spin"></i> Deleting...</button>
+            <button type="button" class="btn-edit" [routerLink]="['/updateO',item.id]" id="detail-edit-btn"><i class="fas fa-spinner fa-spin"></i>Edit...</button>
+            <button type="button" class="btn-close" (click)="closeO()">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <!-- View Details Modal Axes-->
+     <div class="modal" id="view-modal" [class.active]="activeA" *ngFor="let item of axe" [class.fade-out]="item.id === cID">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="view-modal-title">Objectif Details</h2>
+          <span class="close-modal"><button class="close-button" (click)="closeA()">&times;</button></span>
+        </div>
+        <div class="modal-body" >
+          <div class="details-container">
+<div class="card">
+  <svg class="wave" viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M0,256L11.4,240C22.9,224,46,192,69,192C91.4,192,114,224,137,234.7C160,245,183,235,206,213.3C228.6,192,251,160,274,149.3C297.1,139,320,149,343,181.3C365.7,213,389,267,411,282.7C434.3,299,457,277,480,250.7C502.9,224,526,192,549,181.3C571.4,171,594,181,617,208C640,235,663,277,686,256C708.6,235,731,149,754,122.7C777.1,96,800,128,823,165.3C845.7,203,869,245,891,224C914.3,203,937,117,960,112C982.9,107,1006,181,1029,197.3C1051.4,213,1074,171,1097,144C1120,117,1143,107,1166,133.3C1188.6,160,1211,224,1234,218.7C1257.1,213,1280,139,1303,133.3C1325.7,128,1349,192,1371,192C1394.3,192,1417,128,1429,96L1440,64L1440,320L1428.6,320C1417.1,320,1394,320,1371,320C1348.6,320,1326,320,1303,320C1280,320,1257,320,1234,320C1211.4,320,1189,320,1166,320C1142.9,320,1120,320,1097,320C1074.3,320,1051,320,1029,320C1005.7,320,983,320,960,320C937.1,320,914,320,891,320C868.6,320,846,320,823,320C800,320,777,320,754,320C731.4,320,709,320,686,320C662.9,320,640,320,617,320C594.3,320,571,320,549,320C525.7,320,503,320,480,320C457.1,320,434,320,411,320C388.6,320,366,320,343,320C320,320,297,320,274,320C251.4,320,229,320,206,320C182.9,320,160,320,137,320C114.3,320,91,320,69,320C45.7,320,23,320,11,320L0,320Z"
+      fill-opacity="1"
+    ></path>
+  </svg>
+
+  <div class="icon-container">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 512 512"
+      stroke-width="0"
+      fill="currentColor"
+      stroke="currentColor"
+      class="icon"
+    >
+      <path
+        d="M256 48a208 208 0 1 1 0 416 208 208 0 1 1 0-416zm0 464A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0l-111 111-47-47c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0L369 209z"
+      ></path>
+    </svg>
+  </div>
+  <div class="message-text-container">
+    <p class="message-text">Success message</p>
+    <p class="sub-text">Faire Clicke sur les botton</p>
+  </div>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 15 15"
+    stroke-width="0"
+    fill="none"
+    stroke="currentColor"
+    class="cross-icon"
+  >
+    <path
+      fill="currentColor"
+      d="M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z"
+      clip-rule="evenodd"
+      fill-rule="evenodd"
+    ></path>
+  </svg>
+</div>
+          </div>
+          <div class="details-actions">
+            <button type="button" class="btn-delete" id="detail-edit-btn" (click)="deleteAxe(cID!)"><i class="fas fa-spinner fa-spin"></i> Deleting...</button>
+            <button type="button" class="btn-edit" [routerLink]="['/updateA',item.id]" id="detail-edit-btn"><i class="fas fa-spinner fa-spin"></i>Edit...</button>
+            <button type="button" class="btn-close" (click)="closeA()">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!--Creat Non conformece-->
+<div class="modal" id="crud-modal" [class.active]="activeAddN">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modal-title">Create New Prosses</h2>
+      <span class="close-modal"><button class="close-button" (click)="closeAddN()">&times;</button></span>
+    </div>
+    <div class="modal-body">
+      <form id="crud-form">
+        <div class="form-group">
+          <label for="item-name">Name</label>
+          <input type="text" id="item-name" name="name" required [(ngModel)]="nonconformite.name" />
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" (click)="closeAddN()">Cancel</button>
+          <button type="submit" class="btn-submit" (click)="addnonconformite()"><i class="fas fa-spinner fa-spin"></i>Save...</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!--Creat Objectif-->
+<div class="modal" id="crud-modal" [class.active]="activeAddO">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modal-title">Create New Prosses</h2>
+      <span class="close-modal"><button class="close-button" (click)="closeAddO()">&times;</button></span>
+    </div>
+    <div class="modal-body">
+      <form id="crud-form">
+        <div class="form-group">
+          <label for="item-name">Code</label>
+          <input type="text" id="item-name" name="name" required [(ngModel)]="objectif.code" />
+        </div>
+        <div class="form-group" id="description-group">
+          <label for="item-description">Description</label>
+          <textarea id="item-description" name="description" rows="4" [(ngModel)]="objectif.description"></textarea>
+        </div>
+        <div class="form-group" id="description-group">
+          <select id="item-type" name="type" required >
+            <option value="">Select indicators</option>
+            <option *ngFor="let item of Inducateur" [class.fade-out]="item.id === cuID">{{item.code}}</option>
+          </select>
+        </div>
+        <div class="form-group" id="description-group">
+          <select id="item-type" name="type" required >
+            <option value="">Select process</option>
+            <option *ngFor="let item of processes" [class.fade-out]="item.id === cuID">{{item.code}}</option>
+          </select>
+        </div>
+        <div class="form-group" id="description-group">
+          <select id="item-type" name="type" required >
+            <option value="">Select strategicAxes</option>
+            <option *ngFor="let item of axe" [class.fade-out]="item.id === cuID">{{item.axes}}</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" (click)="closeAddO()">Cancel</button>
+          <button type="submit" class="btn-submit" (click)="addobjectif()"><i class="fas fa-spinner fa-spin"></i>Save...</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!--Creat Axe Stratigeque-->
+<div class="modal" id="crud-modal" [class.active]="activeAddA">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 id="modal-title">Create New Prosses</h2>
+      <span class="close-modal"><button class="close-button" (click)="closeAddA()">&times;</button></span>
+    </div>
+    <div class="modal-body">
+      <form id="crud-form">
+        <div class="form-group">
+          <label for="item-name">Code</label>
+          <input type="text" id="item-name" name="name" required [(ngModel)]="axeStratigique.axes" />
+        </div>
+        <div class="form-group" id="description-group">
+          <select id="item-type" name="type" required >
+            <option value="">Select Objectife</option>
+            <option *ngFor="let item of Objectifs" [class.fade-out]="item.id === cuID && !isActive">{{item.code}}</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-cancel" (click)="closeAddA()">Cancel</button>
+          <button type="submit" class="btn-submit" (click)="addaxe()"><i class="fas fa-spinner fa-spin"></i>Save...</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+
+
+<router-outlet></router-outlet>
+

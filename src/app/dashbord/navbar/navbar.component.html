@@ -1,0 +1,32 @@
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h2>Admin Dashboard</h2>
+  </div>
+
+  <nav class="sidebar-nav">
+    <ul>
+      <li data-panel="processus">
+        <a [routerLink]="['/dashboardWm']" routerLinkActive="active">
+          <div class="nav-icon"><i class="fas fa-sitemap"></i></div>
+          <span>Invoices</span>
+          <div class="nav-indicator"></div>
+        </a>
+      </li>
+      <li data-panel="indicateurs">
+        <a [routerLink]="['/conformance']" routerLinkActive="active">
+          <div class="nav-icon"><i class="fas fa-chart-line"></i></div>
+          <span>Quality Issues</span>
+          <div class="nav-indicator"></div>
+        </a>
+      </li>
+      <li data-panel="utilisateurs">
+        <a [routerLink]="['/hr']" routerLinkActive="active">
+          <div class="nav-icon"><i class="fas fa-users"></i></div>
+          <span>HR Management</span>
+          <div class="nav-indicator"></div>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</aside>

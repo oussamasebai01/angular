@@ -1,0 +1,129 @@
+<!-- Main Dashboard Container -->
+  <div class="dashboard-container" id="main-dashboard">
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h1>Modules</h1>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li class="active">
+            <i class="fas fa-cogs"></i>
+            <span><a routerLink="/dashbordIb"></a>Ibtissem</span>
+          </li>
+          <li>
+            <i class="fas fa-users"></i>
+            <span><a routerLink="/dashbordIb"></a>Wiem</span>
+          </li>
+          <li>
+            <i class="fas fa-clipboard-check"></i>
+            <span>AI_Group</span>
+          </li>
+          <li>
+            <i class="fas fa-chart-line"></i>
+            <span>Nabil</span>
+          </li>
+          <li>
+            <i class="fas fa-file-alt"></i>
+            <span>Amin</span>
+          </li>
+          <li>
+            <i class="fas fa-users"></i>
+            <span>Rayhan</span>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    
+    <main class="main-content">
+      <div class="modules-grid">
+        <!-- Module 1 -->
+        <div class="module-card">
+          <div class="module-icon">
+            <i class="fas fa-cogs"></i>
+          </div>
+          <div class="module-content">
+            <h2>Gestion des Processus</h2>
+            <p>ibtissem</p>
+            <button routerLink="/dashbordIb" class="module-btn" data-module="processus">
+              Voir le module
+            </button>
+          </div>
+        </div>
+
+        <!-- Module 2 -->
+        <div class="module-card">
+          <div class="module-icon">
+            <i class="fas fa-cogs"></i>
+          </div>
+          <div class="module-content">
+            <h2>Gestion des Utilisateur</h2>
+            <p>wiem</p>
+            <button routerLink="/dashboardWm" class="module-btn" data-module="processus">
+              Voir le module
+            </button>
+          </div>
+        </div>
+
+        <!-- Module 3 -->
+        <div class="module-card">
+          <div class="module-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div class="module-content">
+            <h2>Audit & Non-conformités</h2>
+            <p>Tout_Group</p>
+            <button class="module-btn" data-module="audit">
+              Consulter
+            </button>
+          </div>
+        </div>
+
+        <!-- Module 4 -->
+        <div class="module-card">
+          <div class="module-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="module-content">
+            <h2>Suivi des Performances</h2>
+            <p>Nabil</p>
+            <button class="module-btn" data-module="performances">
+              Voir
+            </button>
+          </div>
+        </div>
+
+        <!-- Module 5 -->
+        <div class="module-card">
+          <div class="module-icon">
+            <i class="fas fa-file-alt"></i>
+          </div>
+          <div class="module-content">
+            <h2>Documents Qualité</h2>
+            <p>Amin</p>
+            <button class="module-btn" data-module="documents1">
+              Ouvrir
+            </button>
+          </div>
+        </div>
+
+        <!-- Module 6 -->
+        <div class="module-card">
+          <div class="module-icon">
+            <i class="fas fa-file-contract"></i>
+          </div>
+          <div class="module-content">
+            <h2>Documents Qualité</h2>
+            <p>Rayhan</p>
+            <button class="module-btn" data-module="documents2">
+              Ouvrir
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loading-overlay">
+          <div class="spinner"></div>
+          <p>Loading dashboard...</p>
+        </div>
+  </div>

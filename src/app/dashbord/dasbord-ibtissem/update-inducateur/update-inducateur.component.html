@@ -1,0 +1,103 @@
+<div class="container1">
+    <app-nav-bar></app-nav-bar>
+      <main class="main-content1">
+          <!-- Content Panels -->
+          <div class="content-area">
+            <!-- Processes Panel -->
+            <div class="panels-row">
+              <section class="panel active" id="processus-panel">
+                <div class="panel-header">
+                  <h2>Processes</h2>
+                  <button class="btn-primary" data-action="create" data-type="process" >Create</button>
+                </div>
+                <div class="table-container">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>code</th>
+                        <th colspan="2">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of processes" [class.fade-out]="item.id === currentProcessId && !isActiveADD">
+                        <td>{{ item.code }}<td>
+                        <td><button class="btn-action edit">Edit</button></td>
+                        <td><button class="btn-action delete">Delete</button></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            </div>
+            <div class="panels-row">
+                <section class="panel" id="indicateurs-panel">
+                    <div class="panel-header">
+                      <h2>Indicators</h2>
+                      <button class="btn-primary" data-action="create" data-type="indicator">Add</button>
+                    </div>
+                    <div class="table-container">
+                      <table class="data-table">
+                        <thead>
+                          <tr>
+                            <th>Name</th>
+                            <th colspan="2">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let item of Inducateur"  [class.fade-out]="item.id === currentIdInduc && !isActiveIND">
+                            <td> {{item.code}}</td>
+                            <td class="action-cell" data-action="edit">Edit</td>
+                            <td><button class="btn-action delete">Delete</button></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </section>
+              <!-- Statistics Panel -->
+            </div>
+            <div class="panels-row three-panels">
+              <!-- Roles Panel -->
+              <!-- Objectives Panel -->
+              <!--  section -->
+            </div>
+          </div>
+        </main>
+  </div>
+  
+  <!--Creat Inducater-->
+<div class="modal" id="crud-modal" [class.active]="isActiveIND">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">Edit New Inducateur</h2>
+        <span class="close-modal"><button routerLink="/dashbordIb" class="close-button">&times;</button></span>
+      </div>
+      <div class="modal-body">
+        <form id="crud-form">
+          <div class="form-group">
+            <label for="item-name">Code</label>
+            <input type="text" id="item-name" name="name" required [(ngModel)]="ind.code" />
+          </div>
+          <div class="form-group">
+            <label for="item-Libelle">Libelle</label>
+            <input type="text" id="item-Libelle" name="libelle" required  [(ngModel)]="ind.libelle"/>
+          </div>
+          <div class="form-group">
+            <label for="item-methode">Methode_Calculle</label>
+            <input type="text" id="item-methode" name="methode" required  [(ngModel)]="ind.methode"/>
+          </div>
+          <div class="form-group" id="description-group">
+            <select id="item-type" name="type" required >
+              <option value="">Select Objectife</option>
+              <option *ngFor="let item of Objectifs" [class.fade-out]="item.id === currentIdInduc ">{{item.code}}</option>
+            </select>
+          </div>
+          <div class="form-actions">
+            <button routerLink="/dashbord" type="button" class="btn-cancel">Cancel</button>
+            <button type="submit" class="btn-submit" (click)="UppdateInducateur()"><i class="fas fa-spinner fa-spin"></i>add...</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+
