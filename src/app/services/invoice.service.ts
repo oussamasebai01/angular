@@ -19,6 +19,12 @@ export class InvoiceService {
     );
   }
 
+  getDepartments(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/departments`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   addInvoice(invoice: Invoice): Observable<Invoice> {
     return this.http.post<Invoice>(`${this.apiUrl}/invoices`, invoice).pipe(
       catchError(this.handleError)

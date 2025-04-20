@@ -19,7 +19,7 @@
         </label>
       </div>
       <div class="user">
-        <img src="assets/as/imgs/customer01.jpg" alt="User profile" />
+        
       </div>
     </div>
   
@@ -129,7 +129,7 @@
         </div>
   <!-- Budget -->
 <div class="form-group">
-    <label for="budget">Budget (€)</label>
+    <label for="budget">Budget Annuel(€)</label>
     <input
       id="budget"
       formControlName="budget"
@@ -146,7 +146,7 @@
   
   <!-- Dépense -->
   <div class="form-group">
-    <label for="depense">Dépense (€)</label>
+    <label for="depense">Dépense Annuel (€)</label>
     <input
       id="depense"
       formControlName="depense"
@@ -178,17 +178,18 @@
     </div>
   </div>
   
-  <!-- Département -->
-  <div class="form-group">
-    <label for="department">Département</label>
-    <input
-      id="department"
-      formControlName="department"
-      type="text"
-      placeholder="Ex: Finance"
-      class="form-control"
-    />
-  </div>
+ <!-- Département -->
+<div class="form-group">
+  <label for="department">Département</label>
+  <select
+    id="department"
+    formControlName="department"
+    class="form-control"
+  >
+    <option value="" disabled>Sélectionnez un département</option>
+    <option *ngFor="let dept of departments" [value]="dept.id">{{ dept.name }}</option>
+  </select>
+</div>
   
   <!-- Projet -->
   <div class="form-group">
@@ -220,82 +221,93 @@
       </form>
     </div>
   
-    <!-- Invoice Table -->
-    <div class="invoice-table card">
-      <h2>Invoice List</h2>
-      <div class="export-buttons">
-        <button class="btn-export" (click)="exportReport('CSV')">Export to CSV</button>
-      </div>
-      <form class="filter-form" (ngSubmit)="applyFilters(filterForm.value)" #filterForm="ngForm">
-        <div class="filter-row">
-          <input
-            type="date"
-            name="startDate"
-            [(ngModel)]="filterValues.startDate"
-            placeholder="Start Date"
-          />
-          <input
-            type="date"
-            name="endDate"
-            [(ngModel)]="filterValues.endDate"
-            placeholder="End Date"
-          />
-          <input
-            type="text"
-            name="department"
-            [(ngModel)]="filterValues.department"
-            placeholder="Department"
-          />
-          <input
-            type="text"
-            name="project"
-            [(ngModel)]="filterValues.project"
-            placeholder="Project"
-          />
-          <button type="submit" class="btn-filter">Apply Filters</button>
-          <button type="button" class="btn-reset" (click)="resetFilters()">Reset</button>
-        </div>
-      </form>
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Number</th>
-            <th>Vendor</th>
-            <th>Amount (€)</th>
-            <th>Date</th>
-            <th>Due Date</th>
-            <th>Description</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let invoice of filteredInvoices; let i = index">
-            <td>{{ i + 1 }}</td>
-            <td>{{ invoice.invoiceNumber }}</td>
-            <td>{{ invoice.vendorName }}</td>
-            <td>{{ invoice.amount | number:'1.2-2' }}</td>
-            <td>{{ invoice.invoiceDate | date:'yyyy-MM-dd' }}</td>
-            <td>{{ invoice.dueDate | date:'yyyy-MM-dd' }}</td>
-            <td>{{ invoice.description }}</td>
-            <td>{{ invoice.status }}</td>
-            <td>
-              <button class="btn-action btn-edit" (click)="editInvoice(invoice)">Edit</button>
-              <button
-              *ngIf="invoice.id"
-              class="btn-action btn-delete"
-              (click)="deleteInvoice(invoice.id)"
-            >
-              Delete
-            </button>            </td>
-          </tr>
-          <tr *ngIf="filteredInvoices.length === 0">
-            <td colspan="9" class="text-center">No invoices found.</td>
-          </tr>
-        </tbody>
-      </table>
+   <!-- Invoice Table -->
+<div class="invoice-table card">
+  <h2>Invoice List</h2>
+  <div class="export-buttons">
+    <button class="btn-export" (click)="exportReport('CSV')">Export to CSV</button>
+  </div>
+  <form class="filter-form" (ngSubmit)="applyFilters(filterForm.value)" #filterForm="ngForm">
+    <div class="filter-row">
+      <input
+        type="date"
+        name="startDate"
+        [(ngModel)]="filterValues.startDate"
+        placeholder="Start Date"
+      />
+      <input
+        type="date"
+        name="endDate"
+        [(ngModel)]="filterValues.endDate"
+        placeholder="End Date"
+      />
+      <input
+        type="text"
+        name="department"
+        [(ngModel)]="filterValues.department"
+        placeholder="Department"
+      />
+      <input
+        type="text"
+        name="project"
+        [(ngModel)]="filterValues.project"
+        placeholder="Project"
+      />
+      <button type="submit" class="btn-filter">Apply Filters</button>
+      <button type="button" class="btn-reset" (click)="resetFilters()">Reset</button>
     </div>
+  </form>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Number</th>
+        <th>Vendor</th>
+        <th>Amount (€)</th>
+        <th>Date</th>
+        <th>Due Date</th>
+        <th>Description</th>
+        <th>Status</th>
+        <th>Budget Annuel</th>
+        <th>Dépense Annuel</th>
+        <th>Gain Annuel</th>
+        <th>Département</th>
+        <th>Projet</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let invoice of filteredInvoices; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ invoice.invoiceNumber || invoice.invictNumber }}</td>
+        <td>{{ invoice.vendorName }}</td>
+        <td>{{ (invoice.amount || invoice.amount) | number:'1.2-2' }}</td>
+        <td>{{ (invoice.invoiceDate || invoice.invictGates) | date:'yyyy-MM-dd' }}</td>
+        <td>{{ (invoice.dueDate || invoice.doublet) | date:'yyyy-MM-dd' }}</td>
+        <td>{{ invoice.description }}</td>
+        <td>
+          <span [class]="'status-badge status-' + (invoice.status || 'NEW').toLowerCase()">
+            {{ invoice.status || 'NEW' }}
+          </span>
+        </td>
+        <td>{{ (invoice.budget || 0) | number:'1.2-2' }}</td>
+        <td>{{ (invoice.depense || 0) | number:'1.2-2' }}</td>
+        <td>{{ (invoice.gainAnnuel || invoice.gainAmount || 0) | number:'1.2-2' }}</td>
+        <td>{{ getDepartmentName(invoice.department || invoice.apartment) }}</td>
+        <td>{{ invoice.project }}</td>
+        <td>
+          <button class="btn-action btn-edit" (click)="editInvoice(invoice)">Edit</button>
+          <button *ngIf="invoice.id" class="btn-action btn-delete" (click)="deleteInvoice(invoice.id)">
+            Delete
+          </button>
+        </td>
+      </tr>
+      <tr *ngIf="filteredInvoices.length === 0">
+        <td colspan="14" class="text-center">No invoices found.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
     <!-- Filter Inputs -->
     <router-outlet></router-outlet>
   </div>
