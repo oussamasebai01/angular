@@ -293,7 +293,7 @@
         <td>{{ (invoice.budget || 0) | number:'1.2-2' }}</td>
         <td>{{ (invoice.depense || 0) | number:'1.2-2' }}</td>
         <td>{{ (invoice.gainAnnuel || invoice.gainAmount || 0) | number:'1.2-2' }}</td>
-        <td>{{ getDepartmentName(invoice.department || invoice.apartment) }}</td>
+        <td>{{ getDepartmentName(invoice.department.name) }}</td>
         <td>{{ invoice.project }}</td>
         <td>
           <button class="btn-action btn-edit" (click)="editInvoice(invoice)">Edit</button>

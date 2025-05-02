@@ -1,5 +1,6 @@
 <div class="container1">
   <app-navbar></app-navbar>
+
   <!-- ========================= Main ==================== -->
   <div class="main-content">
     <!-- Topbar -->
@@ -8,7 +9,7 @@
         <ion-icon name="menu-outline"></ion-icon>
       </div>
       <div class="user">
-        <img src="assets/as/imgs/customer01.jpg" alt="">
+        <img src="assets/as/imgs/customer01.jpg" alt="User Profile">
       </div>
     </div>
 
@@ -16,27 +17,25 @@
     <div class="content">
       <!-- Section Gestion des Rôles -->
       <div class="card">
-        <!-- Form to add or update a role -->
         <div class="form-container">
-          <h3>{{ editMode ? 'Update a Role' : 'Add a Role' }}</h3>
+          <h3>{{ editMode ? 'Modifier un Rôle' : 'Ajouter un Rôle' }}</h3>
           <form (ngSubmit)="onSubmit()">
             <label>
-              Role Name:
-              <input type="text" [(ngModel)]="currentRole.name" name="name" placeholder="Enter role name" required>
+              Nom du Rôle:
+              <input type="text" [(ngModel)]="currentRole.name" name="name" placeholder="Entrez le nom du rôle" required>
             </label>
-            <button type="submit">{{ editMode ? 'Update' : 'Add' }}</button>
-            <button type="button" (click)="resetForm()" *ngIf="editMode">Cancel</button>
+            <button type="submit">{{ editMode ? 'Mettre à jour' : 'Ajouter' }}</button>
+            <button type="button" (click)="resetForm()" *ngIf="editMode">Annuler</button>
           </form>
         </div>
 
-        <!-- Table to display roles -->
         <div class="table-container">
-          <h3>List of Roles</h3>
+          <h3>Liste des Rôles</h3>
           <table>
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Name</th>
+                <th>Nom</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -45,270 +44,113 @@
                 <td>{{ role.id }}</td>
                 <td>{{ role.name }}</td>
                 <td>
-                  <button (click)="editRole(role)">Edit</button>
-                  <button (click)="deleteRole(role.id!)">Delete</button>
+                  <button (click)="editRole(role)">Modifier</button>
+                  <button (click)="role.id && deleteRole(role.id)">Supprimer</button>
                 </td>
               </tr>
               <tr *ngIf="roles.length === 0">
-                <td colspan="3">No roles found</td>
+                <td colspan="3">Aucun rôle trouvé</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
 
-      <!-- Section Analyse des Besoins en Personnel -->
-      <div class="card">
-        <h2>Analyse des Besoins en Personnel</h2>
-        
-        <div class="analysis-controls">
-          <button (click)="loadAnalysis()" class="action-button">
-            <ion-icon name="refresh-outline"></ion-icon> Actualiser l'analyse
-          </button>
-          
-          <div class="dept-selector">
-            <label>Département</label>
-            <select [(ngModel)]="selectedDepartment" (change)="analyzeDepartment(selectedDepartment)">
-              <option value="">Tous les départements</option>
-              <option *ngFor="let dept of departments" [value]="dept">{{dept}}</option>
-            </select>
-          </div>
+      <div *ngIf="hiringDecision && !isLoading" class="analysis-result">
+        <div class="decision-header" [ngClass]="{
+          'needs-hiring': hiringDecision.needsMoreEmployees,
+          'no-hiring': !hiringDecision.needsMoreEmployees
+        }">
+          <h3>
+            <span class="decision-icon">
+              {{ hiringDecision.needsMoreEmployees ? '⚠️' : '✓' }}
+            </span>
+            {{ hiringDecision.needsMoreEmployees ? 'Besoin de recrutement' : 'Effectifs suffisants' }}
+          </h3>
         </div>
-
-        <div *ngIf="isLoading" class="loading-spinner">
-          <div class="spinner"></div>
-          <span>Analyse en cours...</span>
-        </div>
-
-        <div *ngIf="error" class="error-message">
-          <span class="error-icon">!</span>
-          {{ error }}
-        </div>
-
-        <div *ngIf="hiringDecision && !isLoading" class="analysis-result">
-          <div class="decision-header" [class.needs-hiring]="hiringDecision.needsMoreEmployees" 
-                                   [class.no-hiring]="!hiringDecision.needsMoreEmployees">
-            <h3>
-              <span class="decision-icon">{{ hiringDecision.needsMoreEmployees ? '⚠️' : '✓' }}</span>
-              {{ hiringDecision.needsMoreEmployees ? 'Besoin de recrutement' : 'Effectifs suffisants' }}
-            </h3>
+      
+        <div class="decision-details">
+          <div class="detail-item">
+            <h4>Département concerné :</h4>
+            <p>{{ hiringDecision.department || 'Tous les départements' }}</p>
           </div>
-
-          <div class="decision-details">
-            <div class="detail-item">
-              <h4>Département(s) concerné(s):</h4>
-              <p>{{ hiringDecision.department || 'Tous les départements' }}</p>
-            </div>
-
-            <div class="detail-item">
-              <h4>Justification:</h4>
-              <p>{{ hiringDecision.justification }}</p>
-            </div>
-
-            <div class="detail-item">
-              <h4>Recommandation:</h4>
-              <p>{{ hiringDecision.recommendedAction }}</p>
-            </div>
+      
+          <div class="detail-item">
+            <h4>Justification :</h4>
+            <p>{{ hiringDecision.justification || 'Non spécifiée' }}</p>
           </div>
-
-          <div class="metrics-section">
-            <h4 (click)="showMetrics = !showMetrics" class="metrics-toggle">
-              <span class="toggle-icon">{{ showMetrics ? '▼' : '►' }}</span> Métriques détaillées
-            </h4>
-            
-            <div *ngIf="showMetrics" class="metrics-content">
-              <table class="metrics-table">
-                <thead>
-                  <tr>
-                    <th>Indicateur</th>
-                    <th>Valeur</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let metric of getMetrics(hiringDecision.metrics)">
-                    <td>{{ metric.key }}</td>
-                    <td>{{ metric.value | number:'1.1-2' }}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+      
+          <div class="detail-item">
+            <h4>Action recommandée :</h4>
+            <p>{{ hiringDecision.recommendedAction || 'Aucune' }}</p>
+          </div>
+      
+          <div class="detail-item">
+            <h4>Date de l’analyse :</h4>
+            <p>{{ hiringDecision.analysisDate | date:'longDate' }}</p>
           </div>
         </div>
       </div>
-
-      <!-- Section Salary Management -->
-      <div class="card">
-        <h2>Gestion des Salaires</h2>
-        
-        <div class="salary-controls">
-          <div class="user-selector">
-            <label>Utilisateur</label>
-            <select [(ngModel)]="selectedUserId" (change)="loadSalaryData()">
-              <option value="">Sélectionner un utilisateur</option>
-              <option *ngFor="let user of users" [value]="user.userId">{{ user.nom }} {{ user.prenom }}</option>
-            </select>
-          </div>
-          
-          <button (click)="calculateAllSalaries()" class="action-button">
-            <ion-icon name="refresh-outline"></ion-icon> Recalculer tous les salaires
-          </button>
-        </div>
-
-        <div *ngIf="salaryLoading" class="loading-spinner">
-          <div class="spinner"></div>
-          <span>Calcul en cours...</span>
-        </div>
-
-        
-
-        <div *ngIf="salaryData && !salaryLoading" class="salary-result">
-          <h3>Salaire de l'utilisateur</h3>
-          <div class="salary-details">
-            <div class="detail-item">
-              <h4>Nom:</h4>
-              <p>{{ salaryData.nom }} {{ salaryData.prenom }}</p>
-            </div>
-            <div class="detail-item">
-              <h4>Salaire de base:</h4>
-              <p>{{ salaryData.salary?.baseSalary | number:'1.2-2' }} €</p>
-            </div>
-            <div class="detail-item">
-              <h4>Bonus:</h4>
-              <p>{{ salaryData.salary?.bonus | number:'1.2-2' }} €</p>
-            </div>
-            <div class="detail-item">
-              <h4>Salaire total:</h4>
-              <p>{{ salaryData.salary?.totalSalary | number:'1.2-2' }} €</p>
-            </div>
-            <div class="detail-item">
-              <h4>Période:</h4>
-              <p>{{ salaryData.salary?.period }}</p>
-            </div>
-          </div>
-        </div>
-
-        <div *ngIf="salaryHistory && salaryHistory.length > 0" class="salary-history">
-          <h3>Historique des salaires</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Salaire de base</th>
-                <th>Bonus</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let entry of salaryHistory">
-                <td>{{ entry.date | date:'medium' }}</td>
-                <td>{{ entry.baseSalary | number:'1.2-2' }} €</td>
-                <td>{{ entry.bonus | number:'1.2-2' }} €</td>
-                <td>{{ (entry.baseSalary + entry.bonus) | number:'1.2-2' }} €</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Section HR Dashboard -->
-      <div class="container">
-        <h1>HR Dashboard</h1>
       
-        <!-- Date Range Selector -->
-        <div class="date-range">
-          <label>Start Date: </label>
-          <input type="date" [(ngModel)]="startDate" (change)="loadDashboardData()" />
-          <label>End Date: </label>
-          <input type="date" [(ngModel)]="endDate" (change)="loadDashboardData()" />
-        </div>
-      
-        <!-- Overall Metrics -->
-        <div class="overall-metrics" *ngIf="dashboardData">
-          <div class="card">
-            <h3>Overall Turnover Rate</h3>
-            <p>{{ dashboardData.overallTurnoverRate | number:'1.1-1' }}%</p>
-          </div>
-          <div class="card">
-            <h3>Overall Training Completion</h3>
-            <p>{{ dashboardData.overallTrainingCompletionRate | number:'1.1-1' }}%</p>
-          </div>
-          <div class="card">
-            <h3>Overall Performance</h3>
-            <p>{{ dashboardData.overallAveragePerformance | number:'1.1-1' }}</p>
-          </div>
-        </div>
-      
-        <!-- Department Metrics -->
-        <div class="charts" *ngIf="dashboardData">
-          <!-- Turnover Chart -->
-          <div class="chart">
-            <h3>Turnover Rate by Department</h3>
-            <canvas baseChart
-                    [data]="turnoverChartData"
-                    [type]="barChartType"
-                    [options]="barChartOptions"></canvas>
-          </div>
-      
-          <!-- Training Completion Chart -->
-          <div class="chart">
-            <h3>Training Completion by Department</h3>
-            <canvas baseChart
-                    [data]="trainingChartData"
-                    [type]="barChartType"
-                    [options]="barChartOptions"></canvas>
-          </div>
-      
-          <!-- Performance Chart -->
-          <div class="chart">
-            <h3>Average Performance by Department</h3>
-            <canvas baseChart
-                    [data]="performanceChartData"
-                    [type]="barChartType"
-                    [options]="barChartOptions"></canvas>
-          </div>
-        </div>
-      
-        <!-- Detailed Department Data -->
-        <div class="department-details" *ngIf="dashboardData">
-          <h2>Department Details</h2>
-          <div *ngFor="let dept of dashboardData.departments | keyvalue">
-            <h3>{{ dept.key }}</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>Metric</th>
-                  <th>Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Turnover Rate</td>
-                  <td>{{ dept.value.turnoverRate | number:'1.1-1' }}%</td>
-                </tr>
-                <tr>
-                  <td>Training Completion Rate</td>
-                  <td>{{ dept.value.trainingCompletionRate | number:'1.1-1' }}%</td>
-                </tr>
-              </tbody>
-            </table>
-            <h4>Performance Metrics</h4>
-            <table>
-              <thead>
-                <tr>
-                  <th>Employee</th>
-                  <th>Score</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let metric of dept.value.performanceMetrics | keyvalue">
-                  <td>{{ metric.key }}</td>
-                  <td>{{ metric.value | number:'1.1-1' }}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+
+      <!-- Section Gestion des Salaires -->
+<div class="card">
+  <h2>Gestion des Salaires</h2>
+
+  <div class="salary-controls">
+    <div class="user-selector">
+      <label>Utilisateur</label>
+      <select [(ngModel)]="selectedUserId" (change)="loadSalaryData()" name="userId">
+        <option value="">-- Sélectionner un utilisateur --</option>
+        <option *ngFor="let user of users" [value]="user.id">{{ user.nom }} {{ user.prenom }}</option>
+      </select>
     </div>
+    <button (click)="calculateAllSalaries()">Calculer les salaires de tous</button>
+  </div>
+
+  <div *ngIf="salaryError" class="error-message">
+    <span class="error-icon">!</span> {{ salaryError }}
+  </div>
+
+  <div *ngIf="salaryLoading">Chargement en cours...</div>
+
+  <div *ngIf="salaryData && salaryData.salary">
+    <h3>Salaire de {{ salaryData.nom }} {{ salaryData.prenom }}</h3>
+
+    <p><strong>Salaire de base :</strong> {{ salaryData.salary.baseSalary | number:'1.2-2' }} €</p>
+    <p><strong>Bonus :</strong> {{ salaryData.salary.bonus | number:'1.2-2' }} €</p>
+    <p><strong>Présence :</strong> {{ salaryData.daysPresent }} jours / {{ salaryData.totalWorkingDays }} jours</p>
+    <p><strong>Absences :</strong> {{ salaryData.daysAbsent }} jours</p>
+    <p><strong>Service :</strong> {{ salaryData.service }}</p>
+    <p><strong>Département :</strong> {{ salaryData.department?.name }}</p>
+    <p><strong>Statut :</strong> {{ salaryData.employmentStatus }}</p>
+    <p><strong>Expérience :</strong> {{ salaryData.experience }}</p>
+    <p><strong>Score de performance :</strong> {{ salaryData.performanceScore }} / 100</p>
+
+    <!-- Affiche les rôles si disponibles -->
+    <div *ngIf="salaryData.roles?.length">
+      <p><strong>Rôles :</strong> {{ salaryData.roles.join(', ') }}</p>
+    </div>
+
+    <!-- Optionnel : ajustement de présence -->
+    <div *ngIf="salaryData.salary.attendanceAdjustment">
+      <p><strong>Ajustement selon la présence :</strong> {{ salaryData.salary.attendanceAdjustment | number:'1.2-2' }} €</p>
+    </div>
+
+    <!-- Total du salaire -->
+    <div *ngIf="salaryData.salary.totalSalary">
+      <p><strong>Salaire total :</strong> {{ salaryData.salary.totalSalary | number:'1.2-2' }} €</p>
+    </div>
+
+    <!-- Date de calcul -->
+    <div *ngIf="salaryData.salary.calculationDate">
+      <p><strong>Date du calcul :</strong> {{ salaryData.salary.calculationDate | date:'yyyy-MM-dd' }}</p>
+    </div>
+
+    
   </div>
 </div>
+
+      </div>
+
+     

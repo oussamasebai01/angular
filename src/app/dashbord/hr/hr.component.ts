@@ -1,9 +1,10 @@
+// src/app/dashbord/hr/hr.component.ts
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
-import { DashboardData } from 'src/app/services/dashboard.service';
-import { DashboardService } from '../../services/dashboard.service';
-import { StaffingService } from '../../services/staffing.service';
+import { DashboardData, DashboardService } from '../../services/dashboard.service';
+import { StaffingService, User, Salary, Training, SalaryHistoryEntry, HiringAnalysis } from '../../services/staffing.service';
+import { InvoiceService } from '../../services/invoice.service';
 
 // Define interfaces
 interface Role {
@@ -12,41 +13,9 @@ interface Role {
   users?: any[];
 }
 
-interface User {
-  userId: string;
-  identifiant: string;
-  nom: string;
-  prenom: string;
-  email: string;
-  experience: string;
-  department: string;
-  employmentStatus: string;
-  hireDate: string;
-  terminationDate: string | null;
-  salary: Salary | null;
-  trainings: Training[];
-  performanceScore: number;
-  roles: any[];
-}
-
-interface Salary {
-  baseSalary: number;
-  bonus: number;
-  totalSalary: number;
-  calculationDate: string;
-  period: string;
-}
-
-interface Training {
-  title: string;
-  status: string;
-  completionDate: string;
-}
-
-interface SalaryHistoryEntry {
-  date: string;
-  baseSalary: number;
-  bonus: number;
+interface Department {
+  id?: string;
+  name: string;
 }
 
 @Component({
@@ -55,15 +24,14 @@ interface SalaryHistoryEntry {
   styleUrls: ['./hr.component.css']
 })
 export class HrComponent implements OnInit {
-  [x: string]: any;
   dashboardData: DashboardData | null = null;
   startDate = '2023-01-01';
   endDate = '2023-12-31';
-  hiringDecision: any;
+  hiringDecision: HiringAnalysis | null = null;
   isLoading = false;
   error: string | null = null;
   selectedDepartment = '';
-  departments = ['IT', 'HR', 'Finance', 'Sales'];
+  departmentsListe: Department[] = [];
   showMetrics = false;
   salaryData: User | null = null;
   salaryHistory: SalaryHistoryEntry[] = [];
@@ -71,7 +39,7 @@ export class HrComponent implements OnInit {
   selectedUserId: string = '';
   users: User[] = [];
   salaryLoading: boolean = false;
-  salaryError: string | null = null;  
+  salaryError: string | null = null;
 
   // Chart configurations
   barChartType: ChartType = 'bar';
@@ -96,32 +64,50 @@ export class HrComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private dashboardService: DashboardService,
-    private staffingService: StaffingService
+    private staffingService: StaffingService,
+    private invoiceService: InvoiceService
   ) {}
 
   ngOnInit(): void {
     this.loadRoles();
-    this.loadDashboardData();
     this.loadAnalysis();
     this.loadUsers();
+    this.loadDepartments();
   }
 
   // Load users for the dropdown
   loadUsers(): void {
-    this.staffingService.loadUsers().subscribe({
-      next: (users: User[]) => {
-        this.users = users;
+    this.staffingService.getUsers().subscribe({
+      next: (users) => {
+        this.users = users.map(user => ({
+          ...user,
+          id: user.id || ''
+        }));
       },
-      error: (err: any) => {
-        console.error('Erreur lors du chargement des utilisateurs', err);
+      error: (err: Error) => {
+        console.error('Error loading users:', err);
         this.salaryError = 'Erreur lors du chargement des utilisateurs';
+      }
+    });
+  }
+
+  // Load departments
+  loadDepartments(): void {
+    this.invoiceService.getDepartments().subscribe({
+      next: (departments: Department[]) => {
+        this.departmentsListe = departments;
+      },
+      error: (err: Error) => {
+        console.error('Erreur lors du chargement des départements:', err);
+        this.error = 'Erreur lors du chargement des départements';
       }
     });
   }
 
   // Load salary data for the selected user
   loadSalaryData(): void {
-    if (!this.selectedUserId) {
+    console.log('Selected userId:', this.selectedUserId);
+    if (!this.selectedUserId || this.selectedUserId === '') {
       this.salaryData = null;
       this.salaryHistory = [];
       return;
@@ -131,57 +117,52 @@ export class HrComponent implements OnInit {
     this.salaryError = null;
 
     this.staffingService.calculateUserSalary(this.selectedUserId).subscribe({
-      next: (data: User) => {
+      next: (data) => {
         this.salaryData = data;
         this.salaryLoading = false;
       },
-      error: (err: any) => {
-        console.error('Erreur lors du calcul du salaire', err);
-        this.salaryError = err.error?.message || 'Erreur lors du calcul du salaire';
-        this.salaryLoading = false;
-      }
-    });
-
-    this.staffingService.getSalaryHistory(this.selectedUserId).subscribe({
-      next: (history: SalaryHistoryEntry[]) => {
-        this.salaryHistory = history;
-        this.salaryLoading = false;
-      },
-      error: (err: any) => {
-        console.error('Erreur lors du chargement de l\'historique', err);
-        this.salaryError = 'Erreur lors du chargement de l\'historique';
+      error: (err: Error) => {
+        console.error('Erreur lors du calcul du salaire:', err);
+        this.salaryError = err.message || 'Erreur lors du calcul du salaire';
         this.salaryLoading = false;
       }
     });
   }
 
-  // Recalculate all salaries
+  
+
+  // Calculate salaries for all users
   calculateAllSalaries(): void {
     this.salaryLoading = true;
     this.salaryError = null;
 
     this.staffingService.calculateAllSalaries().subscribe({
-      next: (results: string) => {
-        console.log('Salaires calculés:', results);
+      next: (message) => {
+        console.log('Salaries calculated:', message);
         this.salaryLoading = false;
-        if (this.selectedUserId) {
-          this.loadSalaryData();
-        }
+        console.log('Salaries calculated successfully');
       },
-      error: (err: any) => {
-        console.error('Erreur lors du calcul des salaires', err);
+      error: (err: Error) => {
+        console.error('Error calculating all salaries:', err);
         this.salaryError = 'Erreur lors du calcul des salaires';
         this.salaryLoading = false;
       }
     });
   }
 
+  
+
   // Role management
   loadRoles(): void {
-    this.http.get<Role[]>(this.apiUrl).subscribe(
-      (data: Role[]) => (this.roles = data),
-      (error: any) => console.error('Erreur lors du chargement des rôles', error)
-    );
+    this.http.get<Role[]>(this.apiUrl).subscribe({
+      next: (data) => {
+        this.roles = data;
+      },
+      error: (err: Error) => {
+        console.error('Erreur lors du chargement des rôles:', err);
+        this.error = 'Erreur lors du chargement des rôles';
+      }
+    });
   }
 
   onSubmit(): void {
@@ -193,34 +174,45 @@ export class HrComponent implements OnInit {
   }
 
   createRole(): void {
-    this.http.post<Role>(this.apiUrl, this.currentRole).subscribe(
-      (role: any) => {
+    this.http.post<Role>(this.apiUrl, this.currentRole).subscribe({
+      next: (role) => {
         this.roles.push(role);
         this.resetForm();
       },
-      (error: any) => console.error('Erreur lors de la création du rôle', error)
-    );
+      error: (err: Error) => {
+        console.error('Erreur lors de la création du rôle:', err);
+        this.error = 'Erreur lors de la création du rôle';
+      }
+    });
   }
 
   updateRole(): void {
-    if (this.currentRole.id) {
-      this.http.put<Role>(`${this.apiUrl}/${this.currentRole.id}`, this.currentRole).subscribe(
-        (updatedRole) => {
-          const index = this.roles.findIndex((r) => r.id === updatedRole.id);
-          if (index !== -1) this.roles[index] = updatedRole;
-          this.resetForm();
-        },
-        (error) => console.error('Erreur lors de la mise à jour du rôle', error)
-      );
-    }
+    if (!this.currentRole.id) return;
+
+    this.http.put<Role>(`${this.apiUrl}/${this.currentRole.id}`, this.currentRole).subscribe({
+      next: (updatedRole) => {
+        const index = this.roles.findIndex((r) => r.id === updatedRole.id);
+        if (index !== -1) this.roles[index] = updatedRole;
+        this.resetForm();
+      },
+      error: (err: Error) => {
+        console.error('Erreur lors de la mise à jour du rôle:', err);
+        this.error = 'Erreur lors de la mise à jour du rôle';
+      }
+    });
   }
 
   deleteRole(id: string): void {
     if (confirm('Voulez-vous vraiment supprimer ce rôle ?')) {
-      this.http.delete<void>(`${this.apiUrl}/${id}`).subscribe(
-        () => (this.roles = this.roles.filter((role) => role.id !== id)),
-        (error) => console.error('Erreur lors de la suppression du rôle', error)
-      );
+      this.http.delete<void>(`${this.apiUrl}/${id}`).subscribe({
+        next: () => {
+          this.roles = this.roles.filter((role) => role.id !== id);
+        },
+        error: (err: Error) => {
+          console.error('Erreur lors de la suppression du rôle:', err);
+          this.error = 'Erreur lors de la suppression du rôle';
+        }
+      });
     }
   }
 
@@ -245,10 +237,10 @@ export class HrComponent implements OnInit {
         this.hiringDecision = data;
         this.isLoading = false;
       },
-      error: (err) => {
+      error: (err: Error) => {
         this.error = 'Erreur lors du chargement de l\'analyse';
         this.isLoading = false;
-        console.error(err);
+        console.error('Error loading analysis:', err);
       }
     });
   }
@@ -267,15 +259,15 @@ export class HrComponent implements OnInit {
         this.hiringDecision = data;
         this.isLoading = false;
       },
-      error: (err) => {
+      error: (err: Error) => {
         this.error = `Erreur pour le département ${department}`;
         this.isLoading = false;
-        console.error(err);
+        console.error('Error analyzing department:', err);
       }
     });
   }
 
-  getMetrics(metrics: any): { key: string; value: any }[] {
+  getMetrics(metrics: Record<string, any>): { key: string; value: any }[] {
     return Object.keys(metrics).map((key) => ({
       key: this.formatMetricName(key),
       value: metrics[key]
@@ -299,8 +291,9 @@ export class HrComponent implements OnInit {
         this.dashboardData = data;
         this.updateCharts();
       },
-      error: (err) => {
+      error: (err: Error) => {
         console.error('Error fetching dashboard data:', err);
+        this.error = 'Erreur lors du chargement des données du tableau de bord';
       }
     });
   }
@@ -314,7 +307,7 @@ export class HrComponent implements OnInit {
       labels: departments,
       datasets: [
         {
-          label: 'Turnover Rate (%)',
+          label: 'Taux de Rotation (%)',
           data: departments.map((dept) => this.dashboardData!.departments[dept].turnoverRate),
           backgroundColor: 'rgba(255, 99, 132, 0.5)'
         }
@@ -325,7 +318,7 @@ export class HrComponent implements OnInit {
       labels: departments,
       datasets: [
         {
-          label: 'Training Completion Rate (%)',
+          label: 'Taux de Complétion des Formations (%)',
           data: departments.map((dept) => this.dashboardData!.departments[dept].trainingCompletionRate),
           backgroundColor: 'rgba(54, 162, 235, 0.5)'
         }
@@ -336,12 +329,12 @@ export class HrComponent implements OnInit {
       labels: departments,
       datasets: [
         {
-          label: 'Average Performance Score',
+          label: 'Score de Performance Moyen',
           data: departments.map((dept) => {
-            const metrics = this.dashboardData!.departments[dept].performanceMetrics;
-            const scores = Object.values(metrics) as number[];
+            const metrics = this.dashboardData!.departments[dept].performanceMetrics as Record<string, number>;
+            const scores = Object.values(metrics);
             return scores.length > 0 ? scores.reduce((a, b) => a + b, 0) / scores.length : 0;
-        }),
+          }),
           backgroundColor: 'rgba(75, 192, 192, 0.5)'
         }
       ]
